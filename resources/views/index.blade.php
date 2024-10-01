@@ -10,6 +10,7 @@
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
     @yield('content')
     <div class="container mx-auto px-4 py-8">
+        <h1>UPD:8</h1>
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white dark:bg-gray-800">
                 <thead class="bg-gray-200 dark:bg-gray-700">
