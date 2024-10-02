@@ -8,12 +8,42 @@ use App\Models\Cidade;
 
 class ClienteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // Inicia a query
+        $query = Cliente::query();
+    
+        // Filtra por nome
+        if ($request->filled('nome')) {
+            $query->where('nome', 'like', '%' . $request->nome . '%');
+        }
+    
+        // Filtra por CPF
+        if ($request->filled('cpf')) {
+            $query->where('cpf', 'like', $request->cpf . '%');
+        }
+    
+        // Filtra por sexo
+        if ($request->filled('sexo')) {
+            $query->where('sexo', $request->sexo);
+        }
+    
+        // Filtra por cidade
+        if ($request->filled('cidade')) {
+            $query->where('cidade_id', $request->cidade);
+        }
+    
+        // Realiza a pesquisa e paginando os resultados
+        $clientes = $query->paginate(5);
+    
+        // Obtem todas as cidades para o select
         $cidades = Cidade::all();
-        $clientes = Cliente::with('cidade')->paginate(5); // Carregando as cidades relacionadas
+    
+        // Retorna a view com os clientes e as cidades
         return view('clientes.index', compact('clientes', 'cidades'));
     }
+    
+
 
     public function edit($id)
     {

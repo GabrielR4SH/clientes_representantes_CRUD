@@ -10,7 +10,7 @@
 </head>
 
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
-    <div class="container mx-auto px-5 py-8">
+    <div class="container mx-auto px-5 py-4">
         @yield('content')
     
 

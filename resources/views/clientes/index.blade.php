@@ -25,12 +25,82 @@
         </div>
         <div class="col-auto ml-auto">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createClientModal">
-                <i class="fas fa-plus"></i>
+                Adicionar Cliente <i class="fas fa-plus"></i>
             </button>
         </div>
     </div>
-    
 
+    <!-- Formulário de Pesquisa de Clientes -->
+    <!-- Formulário de Pesquisa de Clientes -->
+    <div class="border p-4 mb-4" style="border-radius: 5px;">
+        <h5>
+            <button class="btn btn-info" id="toggleSearchForm" style="cursor: pointer;">
+                Buscar Clientes
+                <i class="fas fa-search"></i>
+            </button>
+        </h5>
+        <form method="GET" action="{{ route('clientes.index') }}" id="searchForm" style="display: none;">
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="cpf">CPF</label>
+                    <input type="text" class="form-control" name="cpf" id="cpf" placeholder="Digite o CPF"
+                        value="{{ request('cpf') }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="data_nascimento">Data de Nascimento</label>
+                    <input type="date" class="form-control" name="data_nascimento" id="data_nascimento"
+                        value="{{ request('data_nascimento') }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label>Sexo</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="sexo" id="sexoM" value="M"
+                            {{ request('sexo') == 'M' ? 'checked' : '' }}>
+                        <label class="form-check-label" for="sexoM">Masculino</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="sexo" id="sexoF" value="F"
+                            {{ request('sexo') == 'F' ? 'checked' : '' }}>
+                        <label class="form-check-label" for="sexoF">Feminino</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="estado">Estado</label>
+                    <input type="text" class="form-control" name="estado" id="estado"
+                        value="{{ request('estado') }}">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="cidade">Cidade</label>
+                    <select class="form-control" name="cidade" id="cidade">
+                        <option value="">Selecione uma cidade</option>
+                        @foreach ($cidades as $cidade)
+                            <option value="{{ $cidade->id }}" {{ request('cidade') == $cidade->id ? 'selected' : '' }}>
+                                {{ $cidade->nome }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Pesquisar</button>
+                <a href="{{ route('clientes.index') }}" class="btn btn-secondary">Limpar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('toggleSearchForm').addEventListener('click', function() {
+            const searchForm = document.getElementById('searchForm');
+            if (searchForm.style.display === 'none' || searchForm.style.display === '') {
+                searchForm.style.display = 'block';
+            } else {
+                searchForm.style.display = 'none';
+            }
+        });
+    </script>
 
     <div class="table-responsive">
         <div class="container d-flex justify-content-center">
@@ -55,7 +125,6 @@
                             <td>{{ $cliente->sexo }}</td>
                             <td>{{ $cliente->estado }}</td>
                             <td>{{ $cliente->cidade->nome ?? 'Sem cidade associada' }}</td>
-
                             <td>
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
@@ -71,7 +140,6 @@
                                         </form>
                                     </div>
                                 </div>
-
                             </td>
                         </tr>
 
@@ -82,7 +150,6 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="editClientModalLabel">Editar Cliente</h5>
-
                                     </div>
                                     <div class="modal-body">
                                         <form action="{{ route('clientes.update', $cliente->id) }}" method="POST">
@@ -163,7 +230,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="createClientModalLabel">Criar Cliente</h5>
-
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('clientes.store') }}" method="POST">
