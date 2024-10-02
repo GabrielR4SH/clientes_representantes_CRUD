@@ -18,6 +18,7 @@ class CidadeFactory extends Factory
     {
         return [
             'nome' => $this->faker->city,
+            'estado' => $this->faker->stateAbbr
         ];
     }
 }

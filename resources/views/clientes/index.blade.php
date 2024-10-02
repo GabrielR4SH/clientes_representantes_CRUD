@@ -13,6 +13,7 @@
                     <th scope="col">CPF</th>
                     <th scope="col">Idade</th>
                     <th scope="col">Sexo</th>
+                    <th scope="col">Estado</th>
                     <th scope="col">Cidade</th>
                     <th scope="col">Ações</th>
                 </tr>
@@ -24,10 +25,11 @@
                     <td>{{ $cliente->cpf }}</td>
                     <td>{{ $cliente->idade }}</td>
                     <td>{{ $cliente->sexo }}</td>
+                    <td>{{ $cliente->estado }}</td>
                     <td>{{ $cliente->cidade ? $cliente->cidade->nome : 'N/A' }}</td>
                     <td>
-                        <div class="btn-group" role="group">
-                            <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-primary">Editar</a> 
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-primary" style="margin-right: 10px;">Editar</a> 
                             <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja deletar este cliente?');">
                                 @csrf
                                 @method('DELETE')
@@ -37,6 +39,7 @@
                     </td>
                 </tr>
                 @endforeach
+                
             </tbody>
         </table>
     </div>

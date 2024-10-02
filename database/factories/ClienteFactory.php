@@ -20,9 +20,11 @@ class ClienteFactory extends Factory
         return [
             'nome' => $this->faker->name,
             'cpf' => $this->faker->numerify('###########'),
+            'data_nascimento' => $this->faker->date(),
             'idade' => $this->faker->numberBetween(18, 80),
             'sexo' => $this->faker->randomElement(['M', 'F']),
-            'cidade_id' => Cidade::factory(),
+            'estado' => $this->faker->stateAbbr, // Gerando o estado diretamente na factory de clientes
+            'cidade_id' => Cidade::factory(), // Relaciona com uma cidade gerada pela factory de cidades
         ];
     }
 }
