@@ -1,34 +1,37 @@
 @extends('layouts.app')
 
-@section('title', 'Lista de Clientes')
+@section('title', 'Clientes')
 
 @section('content')
-@if (session('success'))
-    
+    @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
         </div>
     @endif
 
     @if (session('error'))
-    
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ session('error') }}
         </div>
     @endif
 
-    <h1 class="text-center font-weight-bold mb-4">Lista de Clientes</h1>
+    <h1 class="text-center font-weight-bold mb-4">Clientes</h1>
     <hr>
 
-    <div class="text-left mb-3">
-        <a href="{{ route('cidades.index') }}" class="btn btn-info">Gerenciar Cidades</a>
-        <a href="{{ route('representantes.index') }}" class="btn btn-info">Gerenciar Representantes</a>
-        <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#createClientModal">
-            Adicionar Cliente
-        </button>
+    <div class="row mb-3">
+        <div class="col">
+            <a href="{{ route('cidades.index') }}" class="btn btn-primary">Gerenciar Cidades</a>
+            <a href="{{ route('representantes.index') }}" class="btn btn-primary">Gerenciar Representantes</a>
+        </div>
+        <div class="col-auto ml-auto">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createClientModal">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
     </div>
     
-    
+
+
     <div class="table-responsive">
         <div class="container d-flex justify-content-center">
             <table class="table table-bordered table-striped table-hover bg-white">

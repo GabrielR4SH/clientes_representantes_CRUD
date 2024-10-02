@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Lista de Cidades')
+@section('title', 'Cidades')
 
 @section('content')
     @if (session('success'))
@@ -15,12 +15,13 @@
         </div>
     @endif
 
-    <h1 class="text-center font-weight-bold mb-4">Lista de Cidades</h1>
+    <h1 class="text-center font-weight-bold mb-4">Cidades</h1>
     <hr>
 
     <div class="text-left mb-3">
+        <a href="{{ route('clientes.index') }}" class="btn btn-primary">Gerenciar Clientes</a>
         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createCityModal">
-            Adicionar Cidade
+            Adicionar Cidade <i class="fas fa-plus"></i>
         </button>
     </div>
 
@@ -43,7 +44,8 @@
                                 data-target="#editCityModal{{ $cidade->id }}">
                                 Editar
                             </button>
-                            <form action="{{ route('cidades.destroy', $cidade->id) }}" method="POST" style="display:inline;">
+                            <form action="{{ route('cidades.destroy', $cidade->id) }}" method="POST" style="display:inline;"
+                                onsubmit="return confirm('Tem certeza que deseja deletar esta cidade?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Deletar</button>
