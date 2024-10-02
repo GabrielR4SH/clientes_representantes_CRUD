@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nome', 100);
             $table->string('cpf', 11)->unique();
             $table->date('data_nascimento');
-            $table->integer('idade');
             $table->char('sexo', 1)->nullable();
             $table->unsignedBigInteger('cidade_id')->nullable();
             $table->string('estado', 2); // Adicionando o campo 'estado'

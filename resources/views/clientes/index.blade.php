@@ -53,7 +53,7 @@
                             <td>{{ $cliente->estado }}</td>
                             <td>{{ $cliente->cidade->nome ?? 'N/A' }}</td>
                             <td>
-                                <div class="btn-group" role="group" aria-label="Basic example">
+                                <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editClientModal{{ $cliente->id }}">
                                         Editar
                                     </button>
@@ -108,7 +108,7 @@
                                                 <select class="form-control" name="cidade" required onchange="updateEstado(this)">
                                                     <option value="" disabled>Selecione uma cidade</option>
                                                     @foreach ($cidades as $cidade)
-                                                        <option value="{{ $cidade->id }}" data-estado="{{ $cidade->estado }}" {{ $cliente->cidade->id == $cidade->id ? 'selected' : '' }}>
+                                                        <option value="{{ $cidade->id }}" data-estado="{{ $cidade->estado }}" {{ $cliente->cidade_id == $cidade->id ? 'selected' : '' }}>
                                                             {{ $cidade->nome }}
                                                         </option>
                                                     @endforeach

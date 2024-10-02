@@ -11,15 +11,15 @@ class ClienteController extends Controller
     public function index()
     {
         $cidades = Cidade::all();
-        $clientes = Cliente::paginate(5);
+        $clientes = Cliente::with('cidade')->paginate(5); // Carregando as cidades relacionadas
         return view('clientes.index', compact('clientes', 'cidades'));
     }
 
     public function edit($id)
     {
-        $cliente = Cliente::find($id);
-        $cidades = Cidade::all(); // Para usar no modal de edição
-        return view('clientes.edit', compact('cliente', 'cidades'));
+        $cliente = Cliente::with('cidade')->findOrFail($id); // Incluindo a cidade
+        $cidades = Cidade::all();
+        return view('clientes.index', compact('cliente', 'cidades'));
     }
 
     public function update(Request $request, $id)
@@ -28,14 +28,20 @@ class ClienteController extends Controller
             'nome' => 'required|string|max:100',
             'cpf' => 'required|string|size:11|unique:clientes,cpf,' . $id,
             'data_nascimento' => 'required|date',
-            'idade' => 'required|integer',
             'sexo' => 'nullable|string|size:1',
-            'cidade' => 'required|string|max:100',
-            'estado' => 'required|string|size:2',
+            'cidade' => 'required|exists:cidades,id',
+            'estado' => 'required|string|max:2',
         ]);
 
-        $cliente = Cliente::find($id);
-        $cliente->update($request->all());
+        $cliente = Cliente::findOrFail($id);
+        $cliente->update([
+            'nome' => $request->nome,
+            'cpf' => $request->cpf,
+            'data_nascimento' => $request->data_nascimento,
+            'sexo' => $request->sexo,
+            'cidade_id' => $request->cidade,
+            'estado' => $request->estado,
+        ]);
 
         return redirect()->route('clientes.index')->with('success', 'Cliente editado com sucesso.');
     }
@@ -46,26 +52,28 @@ class ClienteController extends Controller
             'nome' => 'required|string|max:100',
             'cpf' => 'required|string|size:11|unique:clientes',
             'data_nascimento' => 'required|date',
-            'idade' => 'required|integer',
             'sexo' => 'nullable|string|size:1',
-            'cidade' => 'required|string|max:100',
-            'estado' => 'required|string|size:2',
+            'cidade' => 'required|exists:cidades,id',
+            'estado' => 'required|string|max:2',
         ]);
 
-        Cliente::create($request->all());
+        Cliente::create([
+            'nome' => $request->nome,
+            'cpf' => $request->cpf,
+            'data_nascimento' => $request->data_nascimento,
+            'sexo' => $request->sexo,
+            'cidade_id' => $request->cidade,
+            'estado' => $request->estado,
+        ]);
 
         return redirect()->route('clientes.index')->with('success', 'Cliente inserido com sucesso!');
     }
 
     public function destroy($id)
     {
-        $cliente = Cliente::find($id);
+        $cliente = Cliente::findOrFail($id);
+        $cliente->delete();
 
-        if ($cliente) {
-            $cliente->delete();
-            return redirect()->route('clientes.index')->with('success', 'Cliente deletado com sucesso.');
-        } else {
-            return redirect()->route('clientes.index')->with('error', 'Cliente não encontrado.');
-        }
+        return redirect()->route('clientes.index')->with('success', 'Cliente deletado com sucesso.');
     }
 }
