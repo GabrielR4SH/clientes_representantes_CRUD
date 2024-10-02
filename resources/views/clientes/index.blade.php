@@ -6,9 +6,7 @@
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            
         </div>
     @endif
 
@@ -51,7 +49,8 @@
                             <td>{{ \Carbon\Carbon::parse($cliente->data_nascimento)->format('d/m/Y') }}</td>
                             <td>{{ $cliente->sexo }}</td>
                             <td>{{ $cliente->estado }}</td>
-                            <td>{{ $cliente->cidade->nome ?? 'N/A' }}</td>
+                            <td>{{ $cliente->cidade->nome ?? 'Sem cidade associada' }}</td>
+
                             <td>
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editClientModal{{ $cliente->id }}">
