@@ -9,6 +9,7 @@ class Representante extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['nome', 'cidade_id']; 
     public function cidade()
     {
         return $this->belongsTo(Cidade::class);

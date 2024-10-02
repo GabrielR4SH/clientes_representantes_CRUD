@@ -9,8 +9,9 @@
 </head>
 
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-5 py-8">
         @yield('content')
+    
 
     </div>
     <!-- jQuery e Bootstrap JS -->

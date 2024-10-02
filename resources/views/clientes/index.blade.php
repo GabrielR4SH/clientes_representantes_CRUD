@@ -3,26 +3,32 @@
 @section('title', 'Lista de Clientes')
 
 @section('content')
-    @if (session('success'))
+@if (session('success'))
+    
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
         </div>
     @endif
 
     @if (session('error'))
+    
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ session('error') }}
         </div>
     @endif
 
     <h1 class="text-center font-weight-bold mb-4">Lista de Clientes</h1>
+    <hr>
 
     <div class="text-left mb-3">
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createClientModal">
+        <a href="{{ route('cidades.index') }}" class="btn btn-info">Gerenciar Cidades</a>
+        <a href="{{ route('representantes.index') }}" class="btn btn-info">Gerenciar Representantes</a>
+        <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#createClientModal">
             Adicionar Cliente
         </button>
     </div>
-
+    
+    
     <div class="table-responsive">
         <div class="container d-flex justify-content-center">
             <table class="table table-bordered table-striped table-hover bg-white">
@@ -49,30 +55,31 @@
 
                             <td>
                                 <div class="d-flex">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editClientModal{{ $cliente->id }}">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#editClientModal{{ $cliente->id }}">
                                         Editar
                                     </button>
                                     <div style="margin-left: 10px;">
-                                        <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja deletar este cliente?');">
+                                        <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST"
+                                            onsubmit="return confirm('Tem certeza que deseja deletar este cliente?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">Deletar</button>
                                         </form>
                                     </div>
                                 </div>
-                                
+
                             </td>
                         </tr>
 
                         <!-- Modal de Edição -->
-                        <div class="modal fade" id="editClientModal{{ $cliente->id }}" tabindex="-1" role="dialog" aria-labelledby="editClientModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="editClientModal{{ $cliente->id }}" tabindex="-1" role="dialog"
+                            aria-labelledby="editClientModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="editClientModalLabel">Editar Cliente</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+
                                     </div>
                                     <div class="modal-body">
                                         <form action="{{ route('clientes.update', $cliente->id) }}" method="POST">
@@ -80,33 +87,43 @@
                                             @method('PUT')
                                             <div class="form-group">
                                                 <label for="nome">Nome</label>
-                                                <input type="text" class="form-control" name="nome" value="{{ $cliente->nome }}" required>
+                                                <input type="text" class="form-control" name="nome"
+                                                    value="{{ $cliente->nome }}" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="cpf">CPF</label>
-                                                <input type="text" class="form-control" name="cpf" value="{{ $cliente->cpf }}" required>
+                                                <input type="text" class="form-control" name="cpf"
+                                                    value="{{ $cliente->cpf }}" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="data_nascimento">Data de Nascimento</label>
-                                                <input type="date" class="form-control" name="data_nascimento" value="{{ $cliente->data_nascimento }}" required>
+                                                <input type="date" class="form-control" name="data_nascimento"
+                                                    value="{{ $cliente->data_nascimento }}" required>
                                             </div>
                                             <div class="form-group">
                                                 <label>Sexo</label><br>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="sexo" value="M" {{ $cliente->sexo == 'M' ? 'checked' : '' }} required>
+                                                    <input class="form-check-input" type="radio" name="sexo"
+                                                        value="M" {{ $cliente->sexo == 'M' ? 'checked' : '' }}
+                                                        required>
                                                     <label class="form-check-label">Masculino</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="sexo" value="F" {{ $cliente->sexo == 'F' ? 'checked' : '' }} required>
+                                                    <input class="form-check-input" type="radio" name="sexo"
+                                                        value="F" {{ $cliente->sexo == 'F' ? 'checked' : '' }}
+                                                        required>
                                                     <label class="form-check-label">Feminino</label>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="cidade">Cidade</label>
-                                                <select class="form-control" name="cidade" required onchange="updateEstado(this)">
+                                                <select class="form-control" name="cidade" required
+                                                    onchange="updateEstado(this)">
                                                     <option value="" disabled>Selecione uma cidade</option>
                                                     @foreach ($cidades as $cidade)
-                                                        <option value="{{ $cidade->id }}" data-estado="{{ $cidade->estado }}" {{ $cliente->cidade_id == $cidade->id ? 'selected' : '' }}>
+                                                        <option value="{{ $cidade->id }}"
+                                                            data-estado="{{ $cidade->estado }}"
+                                                            {{ $cliente->cidade_id == $cidade->id ? 'selected' : '' }}>
                                                             {{ $cidade->nome }}
                                                         </option>
                                                     @endforeach
@@ -114,10 +131,12 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="estado">Estado</label>
-                                                <input type="text" class="form-control" name="estado" value="{{ $cliente->estado }}" readonly>
+                                                <input type="text" class="form-control" name="estado"
+                                                    value="{{ $cliente->estado }}" readonly>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Cancelar</button>
                                                 <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                                             </div>
                                         </form>
@@ -135,14 +154,13 @@
     </div>
 
     <!-- Modal para criar cliente -->
-    <div class="modal fade" id="createClientModal" tabindex="-1" role="dialog" aria-labelledby="createClientModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createClientModal" tabindex="-1" role="dialog"
+        aria-labelledby="createClientModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="createClientModalLabel">Criar Cliente</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('clientes.store') }}" method="POST">
@@ -175,7 +193,8 @@
                             <select class="form-control" name="cidade" required onchange="updateEstado(this)">
                                 <option value="" disabled selected>Selecione uma cidade</option>
                                 @foreach ($cidades as $cidade)
-                                    <option value="{{ $cidade->id }}" data-estado="{{ $cidade->estado }}">{{ $cidade->nome }}</option>
+                                    <option value="{{ $cidade->id }}" data-estado="{{ $cidade->estado }}">
+                                        {{ $cidade->nome }}</option>
                                 @endforeach
                             </select>
                         </div>
