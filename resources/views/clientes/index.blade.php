@@ -6,16 +6,12 @@
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
-            
         </div>
     @endif
 
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ session('error') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
         </div>
     @endif
 
@@ -52,16 +48,19 @@
                             <td>{{ $cliente->cidade->nome ?? 'Sem cidade associada' }}</td>
 
                             <td>
-                                <div class="btn-group" role="group">
+                                <div class="d-flex">
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editClientModal{{ $cliente->id }}">
                                         Editar
                                     </button>
-                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja deletar este cliente?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">Deletar</button>
-                                    </form>
+                                    <div style="margin-left: 10px;">
+                                        <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja deletar este cliente?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Deletar</button>
+                                        </form>
+                                    </div>
                                 </div>
+                                
                             </td>
                         </tr>
 
