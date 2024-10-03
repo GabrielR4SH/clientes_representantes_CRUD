@@ -31,7 +31,6 @@
     </div>
 
     <!-- Formulário de Pesquisa de Clientes -->
-    <!-- Formulário de Pesquisa de Clientes -->
     <div class="border p-4 mb-4" style="border-radius: 5px;">
         <h5>
             <button class="btn btn-info" id="toggleSearchForm" style="cursor: pointer;">
@@ -224,8 +223,7 @@
     </div>
 
     <!-- Modal para criar cliente -->
-    <div class="modal fade" id="createClientModal" tabindex="-1" role="dialog"
-        aria-labelledby="createClientModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createClientModal" tabindex="-1" role="dialog" aria-labelledby="createClientModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -263,7 +261,8 @@
                                 <option value="" disabled selected>Selecione uma cidade</option>
                                 @foreach ($cidades as $cidade)
                                     <option value="{{ $cidade->id }}" data-estado="{{ $cidade->estado }}">
-                                        {{ $cidade->nome }}</option>
+                                        {{ $cidade->nome }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -280,6 +279,7 @@
             </div>
         </div>
     </div>
+    
 
     <script>
         function updateEstado(selectElement) {
