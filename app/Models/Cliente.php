@@ -22,7 +22,6 @@ class Cliente extends Model
         return $this->belongsTo(Cidade::class);
     }
 
-
     public function representantes()
     {
         return $this->belongsToMany(Representante::class, 'clientes_representantes');

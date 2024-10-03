@@ -208,6 +208,77 @@
                             </div>
                         </div>
 
+                        <!-- Modal para criar cliente -->
+                        <div class="modal fade" id="createClientModal" tabindex="-1" role="dialog"
+                            aria-labelledby="createClientModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="createClientModalLabel">Criar Cliente</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ route('clientes.store') }}" method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label for="nome">Nome</label>
+                                                <input type="text" class="form-control" name="nome"
+                                                    value="{{ old('nome') }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="cpf">CPF</label>
+                                                <input type="text" class="form-control" name="cpf"
+                                                    value="{{ old('cpf') }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="data_nascimento">Data de Nascimento</label>
+                                                <input type="date" class="form-control" name="data_nascimento"
+                                                    value="{{ old('data_nascimento') }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Sexo</label><br>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="sexo"
+                                                        value="M" {{ old('sexo') == 'M' ? 'checked' : '' }} required>
+                                                    <label class="form-check-label">Masculino</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="sexo"
+                                                        value="F" {{ old('sexo') == 'F' ? 'checked' : '' }} required>
+                                                    <label class="form-check-label">Feminino</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="cidade">Cidade</label>
+                                                <select class="form-control" name="cidade" required
+                                                    onchange="updateEstado(this)">
+                                                    <option value="" disabled selected>Selecione uma cidade</option>
+                                                    @foreach ($cidades as $cidade)
+                                                        <option value="{{ $cidade->id }}"
+                                                            {{ old('cidade') == $cidade->id ? 'selected' : '' }}
+                                                            data-estado="{{ $cidade->estado }}">
+                                                            {{ $cidade->nome }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="estado">Estado</label>
+                                                <input type="text" class="form-control" name="estado"
+                                                    value="{{ old('estado') }}" readonly>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary">Criar Cliente</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
 
                         <!-- Modal de Edição -->
                         <div class="modal fade" id="editClientModal{{ $cliente->id }}" tabindex="-1" role="dialog"
@@ -285,6 +356,7 @@
                 </tbody>
             </table>
         </div>
+
         <div class="py-4 d-flex justify-content-center">
             {{ $clientes->links('pagination::bootstrap-4') }}
         </div>
@@ -292,12 +364,24 @@
 
     <script>
         function updateEstado(selectElement) {
-            const estadoInput = selectElement.closest('.modal').querySelector('input[name="estado"]');
-            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            // Verifica se o select e a opção selecionada existem
+            if (selectElement && selectElement.selectedIndex !== -1) {
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
 
-            if (selectedOption) {
-                estadoInput.value = selectedOption.getAttribute('data-estado');
+                // Verifica se o modal é encontrado corretamente
+                const modal = selectElement.closest('.modal');
+                if (modal) {
+                    // Encontra o campo de estado dentro do modal
+                    const estadoInput = modal.querySelector('input[name="estado"]');
+
+                    // Verifica se o campo de estado foi encontrado
+                    if (estadoInput && selectedOption) {
+                        // Atribui o valor do estado ao campo
+                        estadoInput.value = selectedOption.getAttribute('data-estado');
+                    }
+                }
             }
         }
     </script>
+
 @endsection
