@@ -128,17 +128,19 @@
                             <td>
                                 <div class="d-flex justify-content-start gap-3">
                                     <!-- Botão Atribuir Representante -->
-                                    <button type="button" class="btn btn-warning" data-toggle="modal"
-                                        data-target="#assignRepresentativeModal{{ $cliente->id }}">
-                                        Atribuir Representante
-                                    </button>
-
+                                    @if($cliente->representantes->isEmpty()) <!-- Verifica se o cliente tem representantes -->
+                                        <button type="button" class="btn btn-warning" data-toggle="modal"
+                                            data-target="#assignRepresentativeModal{{ $cliente->id }}">
+                                            Atribuir Representante
+                                        </button>
+                                    @endif
+                            
                                     <!-- Botão Editar -->
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
                                         data-target="#editClientModal{{ $cliente->id }}">
                                         Editar
                                     </button>
-
+                            
                                     <!-- Formulário de Deletar Cliente -->
                                     <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
                                         @csrf
@@ -150,6 +152,7 @@
                                     </form>
                                 </div>
                             </td>
+                            
                         </tr>
 
 
