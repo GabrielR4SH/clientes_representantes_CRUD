@@ -100,6 +100,6 @@ SELECT id
 FROM cidades
 WHERE nome = 'Nome da Cidade';  -- Substitua 'Nome da Cidade' pelo nome da cidade que você deseja buscar
 ```
-
+### Script do banco está na pasta database
 
 
