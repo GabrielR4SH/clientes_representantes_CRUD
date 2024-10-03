@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Cidade;
+use App\Models\Representante; // Adicionando o modelo de Representante
 
 class ClienteController extends Controller
 {
@@ -39,17 +40,20 @@ class ClienteController extends Controller
         // Obtem todas as cidades para o select
         $cidades = Cidade::all();
 
-        // Retorna a view com os clientes e as cidades
-        return view('clientes.index', compact('clientes', 'cidades'));
+        // Obtem todos os representantes para o select (se necessário para alguma ação, como atribuição)
+        $representantes = Representante::all();
+
+        // Retorna a view com os clientes, as cidades e os representantes
+        return view('clientes.index', compact('clientes', 'cidades', 'representantes'));
     }
-
-
 
     public function edit($id)
     {
-        $cliente = Cliente::with('cidade')->findOrFail($id); // Incluindo a cidade
+        $cliente = Cliente::with('cidade', 'representantes')->findOrFail($id); // Incluindo a cidade e representantes
         $cidades = Cidade::all();
-        return view('clientes.index', compact('cliente', 'cidades'));
+        $representantes = Representante::all(); // Obtem todos os representantes
+
+        return view('clientes.edit', compact('cliente', 'cidades', 'representantes'));
     }
 
     public function update(Request $request, $id)
@@ -61,6 +65,8 @@ class ClienteController extends Controller
             'sexo' => 'nullable|string|size:1',
             'cidade' => 'required|exists:cidades,id',
             'estado' => 'required|string|max:2',
+            'representantes' => 'nullable|array', // Permite múltiplos representantes
+            'representantes.*' => 'exists:representantes,id', // Valida se os ids dos representantes são válidos
         ]);
 
         $cliente = Cliente::findOrFail($id);
@@ -72,6 +78,11 @@ class ClienteController extends Controller
             'cidade_id' => $request->cidade,
             'estado' => $request->estado,
         ]);
+
+        // Atualiza os representantes do cliente (se houver)
+        if ($request->has('representantes')) {
+            $cliente->representantes()->sync($request->representantes);
+        }
 
         return redirect()->route('clientes.index')->with('success', 'Cliente editado com sucesso.');
     }
@@ -85,9 +96,12 @@ class ClienteController extends Controller
             'sexo' => 'nullable|string|size:1',
             'cidade' => 'required|exists:cidades,id',
             'estado' => 'required|string|max:2',
+            'representantes' => 'nullable|array', // Permite múltiplos representantes
+            'representantes.*' => 'exists:representantes,id', // Valida se os ids dos representantes são válidos
         ]);
 
-        Cliente::create([
+        // Cria o cliente
+        $cliente = Cliente::create([
             'nome' => $request->nome,
             'cpf' => $request->cpf,
             'data_nascimento' => $request->data_nascimento,
@@ -96,9 +110,13 @@ class ClienteController extends Controller
             'estado' => $request->estado,
         ]);
 
+        // Atribui os representantes ao cliente
+        if ($request->has('representantes')) {
+            $cliente->representantes()->sync($request->representantes);
+        }
+
         return redirect()->route('clientes.index')->with('success', 'Cliente inserido com sucesso!');
     }
-
 
     public function destroy($id)
     {

@@ -22,6 +22,7 @@
         <div class="col">
             <a href="{{ route('cidades.index') }}" class="btn btn-primary">Gerenciar Cidades</a>
             <a href="{{ route('representantes.index') }}" class="btn btn-primary">Gerenciar Representantes</a>
+            <a href="{{ route('clientes.representantes.index') }}" class="btn btn-primary">Clientes & Representantes</a>
         </div>
         <div class="col-auto ml-auto">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createClientModal">
@@ -125,30 +126,97 @@
                             <td>{{ $cliente->estado }}</td>
                             <td>{{ $cliente->cidade->nome ?? 'Sem cidade associada' }}</td>
                             <td>
-                                <div class="d-flex">
+                                <div class="d-flex justify-content-start gap-3">
+                                    <!-- Botão Atribuir Representante -->
+                                    <button type="button" class="btn btn-warning" data-toggle="modal"
+                                        data-target="#assignRepresentativeModal{{ $cliente->id }}">
+                                        Atribuir Representante
+                                    </button>
+
+                                    <!-- Botão Editar -->
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
                                         data-target="#editClientModal{{ $cliente->id }}">
                                         Editar
                                     </button>
-                                    <div style="margin-left: 10px;">
-                                        <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST"
-                                            onsubmit="return confirm('Tem certeza que deseja deletar este cliente?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Deletar</button>
-                                        </form>
-                                    </div>
+
+                                    <!-- Formulário de Deletar Cliente -->
+                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
+                                            Deletar
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
 
-                        <!-- Modal de Edição -->
-                        <div class="modal fade" id="editClientModal{{ $cliente->id }}" tabindex="-1" role="dialog"
-                            aria-labelledby="editClientModalLabel" aria-hidden="true">
+
+                        <!-- Modal Atribuir Representante -->
+                        <div class="modal fade" id="assignRepresentativeModal{{ $cliente->id }}" tabindex="-1"
+                            role="dialog" aria-labelledby="assignRepresentativeModalLabel{{ $cliente->id }}"
+                            aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="editClientModalLabel">Editar Cliente</h5>
+                                        <h5 class="modal-title" id="assignRepresentativeModalLabel{{ $cliente->id }}">
+                                            Atribuir Representante a: {{ $cliente->nome }}</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ route('clientes.representantes.store', $cliente->id) }}"
+                                            method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label for="representante">Escolha um Representante</label>
+                                                <select class="form-control" name="representante_id" id="representante"
+                                                    required>
+                                                    <option value="">Selecione um Representante</option>
+
+                                                    @php
+                                                        // Filtra os representantes pela cidade do cliente
+                                                        $representantesDisponiveis = $representantes->filter(function (
+                                                            $representante,
+                                                        ) use ($cliente) {
+                                                            return $representante->cidade_id == $cliente->cidade_id;
+                                                        });
+                                                    @endphp
+
+                                                    @if ($representantesDisponiveis->isEmpty())
+                                                        <option value="" disabled>Nenhum representante disponível
+                                                        </option>
+                                                    @else
+                                                        @foreach ($representantesDisponiveis as $representante)
+                                                            <option value="{{ $representante->id }}">
+                                                                {{ $representante->nome }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary"
+                                                    @if ($representantesDisponiveis->isEmpty()) disabled @endif>
+                                                    Atribuir Representante
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Modal de Edição -->
+                        <div class="modal fade" id="editClientModal{{ $cliente->id }}" tabindex="-1" role="dialog"
+                            aria-labelledby="editClientModalLabel{{ $cliente->id }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editClientModalLabel{{ $cliente->id }}">Editar
+                                            Cliente</h5>
                                     </div>
                                     <div class="modal-body">
                                         <form action="{{ route('clientes.update', $cliente->id) }}" method="POST">
@@ -221,65 +289,6 @@
             {{ $clientes->links('pagination::bootstrap-4') }}
         </div>
     </div>
-
-    <!-- Modal para criar cliente -->
-    <div class="modal fade" id="createClientModal" tabindex="-1" role="dialog" aria-labelledby="createClientModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createClientModalLabel">Criar Cliente</h5>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('clientes.store') }}" method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <label for="nome">Nome</label>
-                            <input type="text" class="form-control" name="nome" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cpf">CPF</label>
-                            <input type="text" class="form-control" name="cpf" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="data_nascimento">Data de Nascimento</label>
-                            <input type="date" class="form-control" name="data_nascimento" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Sexo</label><br>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="sexo" value="M" required>
-                                <label class="form-check-label">Masculino</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="sexo" value="F" required>
-                                <label class="form-check-label">Feminino</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="cidade">Cidade</label>
-                            <select class="form-control" name="cidade" required onchange="updateEstado(this)">
-                                <option value="" disabled selected>Selecione uma cidade</option>
-                                @foreach ($cidades as $cidade)
-                                    <option value="{{ $cidade->id }}" data-estado="{{ $cidade->estado }}">
-                                        {{ $cidade->nome }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="estado">Estado</label>
-                            <input type="text" class="form-control" name="estado" readonly>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Criar Cliente</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    
 
     <script>
         function updateEstado(selectElement) {
