@@ -46,7 +46,7 @@ class ClienteController extends Controller
     {
         $validated = $request->validate([
             'nome' => 'required|string|max:100',
-            'cpf' => 'required|string|size:11|unique:clientes',
+            'cpf' => 'required|string|size:11',
             'data_nascimento' => 'required|date',
             'sexo' => 'required|string|size:1|in:M,F',
             'cidade' => 'required|exists:cidades,id',
