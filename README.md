@@ -61,14 +61,6 @@ ou realize a construção no npm com:
 npm run build
 ```
 
-### 6 . Após seguir todos os passos, você poderá acessar a aplicação em http://localhost:8000.
-
-![Projeto](https://github.com/user-attachments/assets/85515138-0beb-4dfd-9416-28ed84d2b49c)
-
-( Quando um Representante é atribuido a um cliente a opção de atribuir é removida, deve entrar no gerenciamento de Clientes & Representantes para Remover a atribuição)
-
-<hr>
-
 ⦁ Gerar um script SQL que a partir do ID do cliente, retorne todos os representantes que podem atendê-lo.
 ```bash
 SELECT r.id, r.nome
